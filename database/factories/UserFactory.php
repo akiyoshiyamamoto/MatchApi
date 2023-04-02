@@ -2,37 +2,53 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use App\Domain\User\Entities\User;
+use Faker\Generator as Faker;
+use Illuminate\Support\Facades\Hash;
+use PDO;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
-class UserFactory extends Factory
+class UserFactory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    private Faker $faker;
+    private PDO $connection;
+
+    public function __construct(Faker $faker,  PDO $connection)
     {
-        return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
-        ];
+        $this->faker = $faker;
+        $this->connection = $connection;
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    public function create(array $attributes = []): User
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+        $id = $attributes['id'] ?? null;
+        $name = $attributes['name'] ?? $this->faker->name;
+        $email = $attributes['email'] ?? $this->faker->unique()->safeEmail;
+        $password = $attributes['password'] ?? 'password123';
+        $created_at = $attributes['created_at'] ?? $this->faker->dateTime;
+        $updated_at = $attributes['updated_at'] ?? $this->faker->dateTime;
+
+        return new User($id, $name, $email, $password, $created_at, $updated_at);
+    }
+
+    public function createAndPersist(array $attributes = []): User
+    {
+        $user = $this->create($attributes);
+
+        // Insert the user data into the database using PDO
+        $statement = $this->connection->prepare(
+            'INSERT INTO users (name, email, password, created_at, updated_at) VALUES (:name, :email, :password, :created_at, :updated_at)'
+        );
+        $statement->execute([
+            ':name' => $user->getName(),
+            ':email' => $user->getEmail(),
+            ':password' => Hash::make($user->getPassword()),
+            ':created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':updated_at' => $user->getUpdatedAt()->format('Y-m-d H:i:s'),
         ]);
+
+        $id = (int)$this->connection->lastInsertId();
+        $user->setId($id);
+
+        return $user;
     }
 }

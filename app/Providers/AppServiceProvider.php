@@ -13,8 +13,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(PDO::class, function ($app) {
-            $config = $app['config']['database.connections.mysql'];
-            $dsn = 'mysql:host=' . $config['host'] . ';dbname=' . $config['database'] . ';charset=utf8mb4';
+            // 環境を判定して設定を切り替える
+            $config = $app['config']['database.connections.' . env('DB_CONNECTION', 'mysql')];
+            $dsn = $config['driver'] . ':host=' . $config['host'] . ';port=' . $config['port'] . ';dbname=' . $config['database'] . ';charset=utf8mb4';
             $username = $config['username'];
             $password = $config['password'];
             $options = [

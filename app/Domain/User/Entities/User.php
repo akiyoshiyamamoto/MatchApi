@@ -2,18 +2,39 @@
 
 namespace App\Domain\User\Entities;
 
-class User
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User implements JWTSubject, Authenticatable
 {
+    use AuthenticatableTrait;
+
     private $id;
     private $name;
     private $email;
     private $password;
+    private $created_at;
+    private $updated_at;
 
-    public function __construct(string $name, string $email, string $password)
+    public function __construct(?int $id, string $name, string $email, string $password, \DateTime $created_at, \DateTime $updated_at)
     {
+        $this->id = $id;
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
+        $this->created_at = $created_at;
+        $this->updated_at = $updated_at;
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->id;
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 
     public function getId(): int
@@ -55,4 +76,15 @@ class User
     {
         $this->password = $password;
     }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updated_at;
+    }
+
 }

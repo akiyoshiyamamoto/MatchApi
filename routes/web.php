@@ -14,4 +14,3 @@ use App\Http\Controllers\ChatController;
 |
 */
 
-Route::get('/chats/{id}', [ChatController::class, 'show'])->name('chat.show');

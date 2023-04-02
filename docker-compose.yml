@@ -50,10 +50,34 @@ services:
         networks:
             - app-network
 
+    db_test:
+        image: mysql:8.0.28
+        platform: linux/amd64
+        hostname: db_test
+        container_name: db_test
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "33062:3306"
+        environment:
+            MYSQL_DATABASE: match_api_test
+            MYSQL_ROOT_PASSWORD: root
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+            MYSQL_WAIT_TIMEOUT: 28800
+            MYSQL_MAX_ALLOWED_PACKET: 64M
+        volumes:
+            - dbtestdata:/var/lib/mysql/
+        networks:
+            - app-network
+        command: mysqld --innodb_use_native_aio=0
+
 networks:
     app-network:
         driver: bridge
 
 volumes:
     dbdata:
+        driver: local
+    dbtestdata:
         driver: local
