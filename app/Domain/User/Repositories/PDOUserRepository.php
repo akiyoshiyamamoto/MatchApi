@@ -39,7 +39,19 @@ class PDOUserRepository implements UserRepositoryInterface
         return $userData ? $this->createUserFromData($userData) : null;
     }
 
-    private function findUserById(int $id): User
+    public function update(User $user): bool
+    {
+        $statement = $this->connection->prepare(
+            'UPDATE users SET name = :name, email = :email WHERE id = :id'
+        );
+        return $statement->execute([
+            ':id' => $user->getId(),
+            ':name' => $user->getName(),
+            ':email' => $user->getEmail(),
+        ]);
+    }
+
+    public function findUserById(int $id): User
     {
         $sql = "SELECT * FROM `users` WHERE `id` = :id";
         $stmt = $this->connection->prepare($sql);

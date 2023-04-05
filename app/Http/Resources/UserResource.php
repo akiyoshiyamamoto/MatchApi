@@ -9,13 +9,14 @@ class UserResource extends JsonResource
 {
     public function toArray($request)
     {
-        /** @var User $this */
+        /** @var User $user */
+        $user = $this->resource;
         return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'email' => $this->getEmail(),
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt(),
+            'id' => $user->getId(),
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'created_at' => $user->getCreatedAt(),
+            'updated_at' => $user->getUpdatedAt(),
         ];
     }
 

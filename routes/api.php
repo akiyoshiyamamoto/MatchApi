@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,11 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-});
 
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::get('/chats/{id}', [ChatController::class, 'show'])->name('chat.show');
+
+Route::middleware('jwt.check')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'show'])->name('show');
+        Route::put('/', [UserController::class, 'update'])->name('update');
+    });
+});
