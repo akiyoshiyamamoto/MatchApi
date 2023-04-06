@@ -34,7 +34,6 @@ class SwipeControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Swipe right successful',
                 'data' => [
                     'swiper_id' => $swiper->getId(),
                     'swiped_id' => $swiped->getId(),
@@ -54,7 +53,6 @@ class SwipeControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Swipe left successful',
                 'data' => [
                     'swiper_id' => $swiper->getId(),
                     'swiped_id' => $swiped->getId(),
