@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Swipe\Repositories\SwipeRepositoryInterface;
+use App\Http\Requests\SwipeLeftRequest;
 use App\Http\Requests\SwipeRightRequest;
 use Illuminate\Http\JsonResponse;
 
@@ -24,6 +25,24 @@ class SwipeController extends Controller
 
         return response()->json([
             'message' => 'Swipe right successful',
+            'data' => [
+                'id' => $swipe->getId(),
+                'swiper_id' => $swipe->getSwiperId(),
+                'swiped_id' => $swipe->getSwipedId(),
+                'liked' => $swipe->isLiked(),
+            ]
+        ]);
+    }
+
+    public function leftSwipe(SwipeLeftRequest $request): JsonResponse
+    {
+        $swiperId = auth()->id();
+        $swipedId = $request->input('swiped_id');
+
+        $swipe = $this->swipeRepository->create($swiperId, $swipedId, false);
+
+        return response()->json([
+            'message' => 'Swipe left successful',
             'data' => [
                 'id' => $swipe->getId(),
                 'swiper_id' => $swipe->getSwiperId(),

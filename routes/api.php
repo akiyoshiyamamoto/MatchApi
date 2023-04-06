@@ -33,5 +33,6 @@ Route::middleware('jwt.check')->group(function () {
 
     Route::prefix('swipes')->group(function () {
         Route::post('/right', [SwipeController::class, 'rightSwipe'])->name('swipes.right');
+        Route::post('/left', [SwipeController::class, 'leftSwipe'])->name('swipes.left');
     });
 });
