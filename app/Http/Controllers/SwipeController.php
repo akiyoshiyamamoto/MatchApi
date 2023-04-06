@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\Swipe\Repositories\SwipeRepositoryInterface;
 use App\Http\Requests\SwipeLeftRequest;
 use App\Http\Requests\SwipeRightRequest;
+use App\Http\Resources\SwipeResource;
 use Illuminate\Http\JsonResponse;
 
 class SwipeController extends Controller
@@ -18,37 +19,35 @@ class SwipeController extends Controller
 
     public function rightSwipe(SwipeRightRequest $request): JsonResponse
     {
-        $swiperId = auth()->id();
-        $swipedId = $request->input('swiped_id');
+        try {
+            $swiperId = auth()->id();
+            $swipedId = $request->input('swiped_id');
 
-        $swipe = $this->swipeRepository->create($swiperId, $swipedId, true);
+            $swipe = $this->swipeRepository->create($swiperId, $swipedId, true);
 
-        return response()->json([
-            'message' => 'Swipe right successful',
-            'data' => [
-                'id' => $swipe->getId(),
-                'swiper_id' => $swipe->getSwiperId(),
-                'swiped_id' => $swipe->getSwipedId(),
-                'liked' => $swipe->isLiked(),
-            ]
-        ]);
+            return (new SwipeResource($swipe))
+                ->response()
+                ->setStatusCode(200)
+                ->header('Content-Type', 'application/json');
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     public function leftSwipe(SwipeLeftRequest $request): JsonResponse
     {
-        $swiperId = auth()->id();
-        $swipedId = $request->input('swiped_id');
+        try {
+            $swiperId = auth()->id();
+            $swipedId = $request->input('swiped_id');
 
-        $swipe = $this->swipeRepository->create($swiperId, $swipedId, false);
+            $swipe = $this->swipeRepository->create($swiperId, $swipedId, false);
 
-        return response()->json([
-            'message' => 'Swipe left successful',
-            'data' => [
-                'id' => $swipe->getId(),
-                'swiper_id' => $swipe->getSwiperId(),
-                'swiped_id' => $swipe->getSwipedId(),
-                'liked' => $swipe->isLiked(),
-            ]
-        ]);
+            return (new SwipeResource($swipe))
+                ->response()
+                ->setStatusCode(200)
+                ->header('Content-Type', 'application/json');
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 }

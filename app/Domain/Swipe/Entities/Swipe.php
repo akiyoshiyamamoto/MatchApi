@@ -36,4 +36,14 @@ class Swipe
     {
         return $this->liked;
     }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            $data['id'],
+            $data['swiper_id'],
+            $data['swiped_id'],
+            (bool) $data['liked']
+        );
+    }
 }
