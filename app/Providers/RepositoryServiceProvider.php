@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Domain\Chat\Repositories\PDOChatRepository;
+use App\Domain\Location\Repositories\LocationRepositoryInterface;
+use App\Domain\Location\Repositories\PDOLocationRepository;
 use App\Domain\Swipe\Repositories\PDOSwipeRepository;
 use App\Domain\Swipe\Repositories\SwipeRepositoryInterface;
 use App\Domain\User\Repositories\PDOUserRepository;
@@ -19,7 +21,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ChatRepositoryInterface::class, PDOChatRepository::class);
         $this->app->bind(MessageRepositoryInterface::class, PDOMessageRepository::class);
         $this->app->bind(UserRepositoryInterface::class, PDOUserRepository::class);
-        $this->app->singleton(SwipeRepositoryInterface::class, PDOSwipeRepository::class);
+        $this->app->bind(SwipeRepositoryInterface::class, PDOSwipeRepository::class);
+        $this->app->bind(LocationRepositoryInterface::class, PDOLocationRepository::class);
     }
 
     public function boot()

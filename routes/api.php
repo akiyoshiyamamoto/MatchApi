@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SwipeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -35,4 +36,6 @@ Route::middleware('jwt.check')->group(function () {
         Route::post('/right', [SwipeController::class, 'rightSwipe'])->name('swipes.right');
         Route::post('/left', [SwipeController::class, 'leftSwipe'])->name('swipes.left');
     });
+
+    Route::put('/location', [LocationController::class, 'update'])->name('location.update');
 });
