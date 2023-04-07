@@ -53,7 +53,7 @@ class AuthController extends Controller
         }
 
         $token = JWTAuth::fromUser($user);
-        return new LoginResponseResource(['access_token' => $token]);
+        return new LoginResponseResource($token);
     }
 
     public function logout()

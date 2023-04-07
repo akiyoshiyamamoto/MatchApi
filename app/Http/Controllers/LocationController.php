@@ -25,7 +25,6 @@ class LocationController extends Controller
             $location = $this->locationRepository->createOrUpdate($userId, $latitude, $longitude);
 
             return response()->json([
-                'message' => 'Location updated successfully',
                 'data' => [
                     'id' => $location->getId(),
                     'user_id' => $location->getUserId(),
