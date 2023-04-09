@@ -1,18 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Http\Controllers;
 
-use App\Domain\Location\Repositories\LocationRepositoryInterface;
+use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\App;
-use PDO;
 use Tests\TestCase;
-use App\Domain\User\Entities\User;
-use App\Domain\User\Repositories\UserRepositoryInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserControllerTest extends TestCase

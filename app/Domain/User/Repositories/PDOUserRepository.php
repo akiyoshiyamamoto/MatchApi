@@ -2,6 +2,7 @@
 
 namespace App\Domain\User\Repositories;
 
+use App\Domain\User\Entities\ProfileImage;
 use App\Domain\User\Entities\User;
 use PDO;
 
@@ -62,6 +63,27 @@ class PDOUserRepository implements UserRepositoryInterface
         return $this->createUserFromData($result);
     }
 
+    public function getUserById(int $userId): ?User
+    {
+        $statement = $this->connection->prepare('SELECT * FROM users WHERE id = :id');
+        $statement->execute([':id' => $userId]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $this->createUserFromData($result) : null;
+    }
+
+    public function updateProfileImage($userId, $path)
+    {
+        $stmt = $this->connection->prepare("INSERT INTO profile_images (user_id, image_path) VALUES (:userId, :path)");
+        $stmt->execute(['userId' => $userId, 'path' => $path]);
+    }
+
+    public function removeProfileImage($userId): bool
+    {
+        $stmt = $this->connection->prepare("DELETE FROM profile_images WHERE id = :imageId");
+        return $stmt->execute(['userId' => $userId]);
+    }
+
     private function createUserFromData(array $userData): User
     {
         return new User(
@@ -72,5 +94,44 @@ class PDOUserRepository implements UserRepositoryInterface
             new \DateTime($userData['created_at']),
             new \DateTime($userData['updated_at']),
         );
+    }
+
+    public function getProfileImagePathById(int $imageId): ?string
+    {
+        $sql = "SELECT path FROM profile_images WHERE id = :imageId";
+        $statement = $this->connection->prepare($sql);
+        $statement->bindParam(':imageId', $imageId, PDO::PARAM_INT);
+        $statement->execute();
+
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result['path'] : null;
+    }
+
+    public function getProfileImages(int $userId): array
+    {
+        $sql = "SELECT * FROM profile_images WHERE user_id = :user_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $profileImages = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $profileImages[] = new ProfileImage($row['id'], $row['user_id'], $row['path']);
+        }
+
+        return $profileImages;
+    }
+
+    public function addProfileImage(int $userId, string $path): ProfileImage
+    {
+        $sql = "INSERT INTO profile_images (user_id, path) VALUES (:user_id, :path)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':path', $path, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $id = $this->connection->lastInsertId();
+        return new ProfileImage($id, $userId, $path);
     }
 }

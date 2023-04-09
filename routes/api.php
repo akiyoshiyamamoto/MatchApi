@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\ProfileImageController;
 use App\Http\Controllers\SwipeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,9 @@ Route::middleware('jwt.check')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('show');
         Route::put('/', [UserController::class, 'update'])->name('update');
+        Route::get('/profile-images', [ProfileImageController::class, 'index']);
+        Route::post('/profile-image', [ProfileImageController::class, 'upload']);
+        Route::delete('/profile-image/{id}', [ProfileImageController::class, 'delete']);
     });
 
     Route::prefix('swipes')->group(function () {

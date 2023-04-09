@@ -1,16 +1,14 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Http\Controllers;
 
 use App\Domain\Swipe\Repositories\SwipeRepositoryInterface;
-use App\Domain\User\Entities\User;
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SwipeControllerTest extends TestCase
 {
