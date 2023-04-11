@@ -14,10 +14,21 @@ class User implements JWTSubject, Authenticatable
     private $name;
     private $email;
     private $password;
+    private $latitude;
+    private $longitude;
     private $created_at;
     private $updated_at;
 
-    public function __construct(?int $id, string $name, string $email, string $password, \DateTime $created_at, \DateTime $updated_at)
+    public function __construct(
+        ?int $id,
+        string $name,
+        string $email,
+        string $password,
+        \DateTime $created_at,
+        \DateTime $updated_at,
+        ?float $latitude,
+        ?float $longitude,
+    )
     {
         $this->id = $id;
         $this->name = $name;
@@ -25,6 +36,8 @@ class User implements JWTSubject, Authenticatable
         $this->password = $password;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
     }
 
     public function getJWTIdentifier()
@@ -87,4 +100,13 @@ class User implements JWTSubject, Authenticatable
         return $this->updated_at;
     }
 
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
 }

@@ -93,6 +93,8 @@ class PDOUserRepository implements UserRepositoryInterface
             $userData['password'],
             new \DateTime($userData['created_at']),
             new \DateTime($userData['updated_at']),
+            $userData['latitude'],
+            $userData['longitude'],
         );
     }
 
@@ -133,5 +135,35 @@ class PDOUserRepository implements UserRepositoryInterface
 
         $id = $this->connection->lastInsertId();
         return new ProfileImage($id, $userId, $path);
+    }
+
+    public function updateUserLocation(int $userId, float $latitude, float $longitude): bool
+    {
+        $stmt = $this->connection->prepare("UPDATE users SET latitude = :latitude, longitude = :longitude WHERE id = :userId");
+        return $stmt->execute(['latitude' => $latitude, 'longitude' => $longitude, 'userId' => $userId]);
+    }
+
+    public function findNearbyUsers(float $latitude, float $longitude, float $radius): array
+    {
+        $stmt = $this->connection->prepare("
+    SELECT *,
+           ( 6371 * acos( cos( radians(:latitude) )
+                         * cos( radians( latitude ) )
+                         * cos( radians( longitude ) - radians(:longitude) )
+                         + sin( radians(:latitude) )
+                         * sin( radians( latitude ) ) ) ) AS distance
+    FROM users
+    HAVING distance < :radius
+    ORDER BY distance
+");
+        $stmt->execute(['latitude' => $latitude, 'longitude' => $longitude, 'radius' => $radius]);
+        $usersData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($usersData as $userData) {
+            $users[] = $this->createUserFromData($userData);
+        }
+
+        return $users;
     }
 }

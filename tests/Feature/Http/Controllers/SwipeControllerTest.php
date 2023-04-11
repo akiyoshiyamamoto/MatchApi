@@ -6,13 +6,11 @@ use App\Domain\Swipe\Repositories\SwipeRepositoryInterface;
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SwipeControllerTest extends TestCase
 {
-    use DatabaseTransactions;
 
     private UserRepositoryInterface $userRepository;
     private SwipeRepositoryInterface $swipeRepository;

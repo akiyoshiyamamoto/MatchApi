@@ -6,7 +6,6 @@ use App\Domain\User\Repositories\UserRepositoryInterface;
 use App\Services\ProfileImageService;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +14,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProfileImageControllerTest extends TestCase
 {
-    use DatabaseTransactions;
     use WithFaker;
 
     private UserRepositoryInterface $userRepository;

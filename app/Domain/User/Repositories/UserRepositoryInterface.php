@@ -15,4 +15,7 @@ interface UserRepositoryInterface
     public function addProfileImage(int $userId, string $path): ProfileImage;
     public function removeProfileImage(int $id): bool;
     public function getProfileImagePathById(int $imageId): ?string;
+    public function updateUserLocation(int $userId, float $latitude, float $longitude): bool;
+    public function findNearbyUsers(float $latitude, float $longitude, float $radius): array;
+
 }

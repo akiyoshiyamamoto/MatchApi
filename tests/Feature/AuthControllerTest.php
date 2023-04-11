@@ -2,20 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Domain\User\Entities\User;
 use Database\Factories\UserFactory;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use PDO;
 use Tests\TestCase;
 use Faker\Factory as FakerFactory;
-use Illuminate\Support\Facades\App;
 
 
 class AuthControllerTest extends TestCase
 {
-    use DatabaseTransactions, WithFaker;
+    use WithFaker;
     private $user;
     private string $password;
 

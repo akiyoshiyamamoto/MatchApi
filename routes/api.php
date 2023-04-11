@@ -34,6 +34,8 @@ Route::middleware('jwt.check')->group(function () {
         Route::get('/profile-images', [ProfileImageController::class, 'index']);
         Route::post('/profile-image', [ProfileImageController::class, 'upload']);
         Route::delete('/profile-image/{id}', [ProfileImageController::class, 'delete']);
+        Route::post('/location', [UserController::class, 'updateLocation']);
+        Route::get('/nearby-users', [UserController::class, 'nearbyUsers']);
     });
 
     Route::prefix('swipes')->group(function () {

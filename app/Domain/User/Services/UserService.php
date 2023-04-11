@@ -28,4 +28,17 @@ class UserService
     {
         return $this->userRepository->findUserById($id);
     }
+
+    public function updateUserLocation($userId, $latitude, $longitude): void
+    {
+        $this->userRepository->updateUserLocation($userId, $latitude, $longitude);
+    }
+
+    public function findNearbyUsers($latitude, $longitude, $radius): array
+    {
+        if ($longitude === null || $latitude === null || $radius === null) {
+            return [];
+        }
+        return $this->userRepository->findNearbyUsers($latitude, $longitude, $radius);
+    }
 }

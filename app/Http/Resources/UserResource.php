@@ -15,6 +15,8 @@ class UserResource extends JsonResource
             'id' => $user->getId(),
             'name' => $user->getName(),
             'email' => $user->getEmail(),
+            'latitude' => $user->getLatitude(),
+            'longitude' => $user->getLongitude(),
             'created_at' => $user->getCreatedAt(),
             'updated_at' => $user->getUpdatedAt(),
         ];

@@ -5,14 +5,12 @@ namespace Tests\Feature\Http\Controllers;
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserControllerTest extends TestCase
 {
-    use DatabaseTransactions;
     use WithFaker;
 
 
@@ -68,5 +66,42 @@ class UserControllerTest extends TestCase
                     'email' => $updatedData['email'],
                 ]
             ]);
+    }
+
+    public function test_nearby_users()
+    {
+        // Create users with location data
+        $user1 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))
+            ->createAndPersist([
+                'latitude' => 35.6895,
+                'longitude' => 139.6917,
+                'password' => '1234',
+            ]);
+
+        $user2 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))
+            ->createAndPersist([
+                'latitude' => 35.6896,
+                'longitude' => 139.6918,
+            ]);
+
+        $user3 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))
+            ->createAndPersist([
+                'latitude' => 35.7000,
+                'longitude' => 139.7000,
+            ]);
+
+        $token = JWTAuth::fromUser($user1);
+
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->json('GET', '/api/user/nearby-users', [
+                'latitude' => $user1->getLatitude(),
+                'longitude' => $user1->getLongitude(),
+                'radius' => 0.1,
+            ]);
+
+
+        $response->assertStatus(200);
+        $this->assertSame($user1->getId(), $response['data'][0]['id']);
+        $this->assertSame($user2->getId(), $response['data'][1]['id']);
     }
 }
