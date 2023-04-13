@@ -166,4 +166,19 @@ class PDOUserRepository implements UserRepositoryInterface
 
         return $users;
     }
+
+    public function findMatchedUsers(int $userId): array
+    {
+        $stmt = $this->connection->prepare("
+        SELECT users.*
+        FROM users
+        JOIN matches ON users.id = matches.user2_id
+        WHERE matches.user1_id = :user_id
+    ");
+        $stmt->execute(['user_id' => $userId]);
+        $matchedUsersData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($userData) => $this->createUserFromData($userData), $matchedUsersData);
+    }
+
 }

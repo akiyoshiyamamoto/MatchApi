@@ -47,4 +47,11 @@ class UserController extends Controller
         $nearbyUsers = $this->userService->findNearbyUsers($user->getLatitude(), $user->getLongitude(), $request->get('radius'));
         return new UserResourceCollection($nearbyUsers);
     }
+
+    public function getMatchedUsers(Request $request)
+    {
+        $userId = auth()->user()->id;
+        $matchedUsers = $this->userService->findMatchedUsers($userId);
+        return new UserResourceCollection($matchedUsers);
+    }
 }

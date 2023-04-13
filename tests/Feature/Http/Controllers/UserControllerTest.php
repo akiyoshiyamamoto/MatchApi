@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\UserFactory;
+use DateTime;
 use Faker\Factory as FakerFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -104,4 +105,56 @@ class UserControllerTest extends TestCase
         $this->assertSame($user1->getId(), $response['data'][0]['id']);
         $this->assertSame($user2->getId(), $response['data'][1]['id']);
     }
+
+    public function test_matched_users()
+    {
+        // Create three users
+        $user1 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))
+            ->createAndPersist(['password' => '1234']);
+        $user2 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))
+            ->createAndPersist();
+        $user3 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))
+            ->createAndPersist();
+
+        // Insert matching data
+        $this->insertMatchingData($user1->getId(), $user2->getId());
+        $this->insertMatchingData($user1->getId(), $user3->getId());
+
+        $token = JWTAuth::fromUser($user1);
+
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->json('GET', '/api/user/matched-users');
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'id' => $user2->getId(),
+                    'name' => $user2->getName(),
+                    'email' => $user2->getEmail(),
+                ],
+                [
+                    'id' => $user3->getId(),
+                    'name' => $user3->getName(),
+                    'email' => $user3->getEmail(),
+                ],
+            ],
+        ]);
+    }
+
+    private function insertMatchingData(int $userId, int $matchedUserId)
+    {
+        $stmt = $this->pdoInstance->prepare("
+        INSERT INTO matches (user1_id, user2_id, created_at, updated_at)
+        VALUES (:user1_id, :user2_id, :created_at, :updated_at)
+    ");
+        $now = (new DateTime())->format('Y-m-d H:i:s');
+        $stmt->execute([
+            ':user1_id' => $userId,
+            ':user2_id' => $matchedUserId,
+            ':created_at' => $now,
+            ':updated_at' => $now,
+        ]);
+    }
+
 }

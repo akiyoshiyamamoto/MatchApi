@@ -17,5 +17,7 @@ interface UserRepositoryInterface
     public function getProfileImagePathById(int $imageId): ?string;
     public function updateUserLocation(int $userId, float $latitude, float $longitude): bool;
     public function findNearbyUsers(float $latitude, float $longitude, float $radius): array;
+    public function findMatchedUsers(int $userId): array;
+
 
 }

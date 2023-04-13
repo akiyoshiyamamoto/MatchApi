@@ -41,4 +41,9 @@ class UserService
         }
         return $this->userRepository->findNearbyUsers($latitude, $longitude, $radius);
     }
+
+    public function findMatchedUsers(int $userId): array
+    {
+        return $this->userRepository->findMatchedUsers($userId);
+    }
 }
