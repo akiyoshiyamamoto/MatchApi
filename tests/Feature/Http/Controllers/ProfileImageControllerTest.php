@@ -3,8 +3,8 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Domain\User\Repositories\UserRepositoryInterface;
-use App\Services\ProfileImageService;
 use Database\Factories\UserFactory;
+use Database\migrations\ProfileImageService;
 use Faker\Factory as FakerFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;

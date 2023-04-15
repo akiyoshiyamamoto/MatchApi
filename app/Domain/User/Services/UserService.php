@@ -2,16 +2,21 @@
 
 namespace App\Domain\User\Services;
 
+use App\Domain\Notification\Repositories\NotificationRepositoryInterface;
 use App\Domain\User\Entities\User;
 use App\Domain\User\Repositories\UserRepositoryInterface;
 
 class UserService
 {
     private UserRepositoryInterface $userRepository;
+    private NotificationRepositoryInterface $notificationRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
-    {
+    public function __construct(
+        UserRepositoryInterface $userRepository,
+        NotificationRepositoryInterface $notificationRepository
+    ) {
         $this->userRepository = $userRepository;
+        $this->notificationRepository = $notificationRepository;
     }
 
     public function update(User $user, array $data): User
@@ -45,5 +50,10 @@ class UserService
     public function findMatchedUsers(int $userId): array
     {
         return $this->userRepository->findMatchedUsers($userId);
+    }
+
+    public function getNewMatchNotifications(int $userId): array
+    {
+        return $this->notificationRepository->findNewMatchNotifications($userId);
     }
 }

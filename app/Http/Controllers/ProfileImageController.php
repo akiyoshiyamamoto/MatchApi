@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use App\Http\Requests\UploadProfileImageRequest;
-use App\Services\ProfileImageService;
+use Database\migrations\ProfileImageService;
 
 class ProfileImageController extends Controller
 {

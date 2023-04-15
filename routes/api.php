@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileImageController;
 use App\Http\Controllers\SwipeController;
 use App\Http\Controllers\UserController;
@@ -45,4 +46,6 @@ Route::middleware('jwt.check')->group(function () {
     });
 
     Route::put('/location', [LocationController::class, 'update'])->name('location.update');
+    Route::get('/notifications/new-matches', [NotificationController::class, 'getNewMatchNotifications']);
+
 });
