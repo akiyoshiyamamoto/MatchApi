@@ -29,14 +29,15 @@ class PDOChatRepository implements ChatRepositoryInterface
             $chatData['sender_id'],
             $chatData['receiver_id'],
             $chatData['message'],
-            new \DateTimeImmutable($chatData['created_at'])
+            new \DateTimeImmutable($chatData['created_at']),
+            new \DateTimeImmutable($chatData['updated_at'])
         );
     }
 
     public function save(Chat $chat): Chat
     {
         $statement = $this->connection->prepare(
-            'INSERT INTO chats (sender_id, receiver_id, message, created_at) VALUES (:sender_id, :receiver_id, :message, :created_at)'
+            'INSERT INTO chats (sender_id, receiver_id, message, created_at, updated_at) VALUES (:sender_id, :receiver_id, :message, :created_at, :updated_at)'
         );
 
         $statement->execute([
@@ -44,6 +45,7 @@ class PDOChatRepository implements ChatRepositoryInterface
             ':receiver_id' => $chat->getReceiverId(),
             ':message' => $chat->getMessage(),
             ':created_at' => $chat->getCreatedAt()->format('Y-m-d H:i:s'),
+            ':updated_at' => $chat->getUpdatedAt()->format('Y-m-d H:i:s'),
         ]);
 
         $chat->setId($this->connection->lastInsertId());
@@ -51,15 +53,15 @@ class PDOChatRepository implements ChatRepositoryInterface
         return $chat;
     }
 
-    public function getChatsBetweenUsers(int $user1Id, int $user2Id): array
+    public function getConversation(int $userId, int $partnerId): array
     {
         $statement = $this->connection->prepare(
-            'SELECT * FROM chats WHERE (sender_id = :user1Id AND receiver_id = :user2Id) OR (sender_id = :user2Id AND receiver_id = :user1Id) ORDER BY created_at ASC'
+            'SELECT * FROM chats WHERE (sender_id = :userId AND receiver_id = :partnerId) OR (sender_id = :partnerId AND receiver_id = :userId) ORDER BY created_at ASC'
         );
 
         $statement->execute([
-            ':user1Id' => $user1Id,
-            ':user2Id' => $user2Id,
+            ':userId' => $userId,
+            ':partnerId' => $partnerId,
         ]);
 
         $chatsData = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -71,7 +73,8 @@ class PDOChatRepository implements ChatRepositoryInterface
                 $chatData['sender_id'],
                 $chatData['receiver_id'],
                 $chatData['message'],
-                new \DateTimeImmutable($chatData['created_at'])
+                new \DateTimeImmutable($chatData['created_at']),
+                new \DateTimeImmutable($chatData['updated_at'])
             );
         }
 

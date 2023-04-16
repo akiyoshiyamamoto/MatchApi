@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Domain\Chat\Services\ChatService;
 use App\Domain\Chat\Services\MessageService;
+use App\Http\Requests\GetConversationRequest;
 use App\Http\Resources\ChatResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ChatController extends Controller
 {
@@ -42,5 +44,14 @@ class ChatController extends Controller
             'chat' => $chat,
             'message' => 'Chat created successfully'
         ], 201);
+    }
+
+    public function getConversation(GetConversationRequest $request): AnonymousResourceCollection
+    {
+        $userId = auth()->user()->id;
+        $partnerId = $request->input('partner_id');
+        $chats = $this->chatService->getConversation($userId, $partnerId);
+
+        return ChatResource::collection($chats);
     }
 }

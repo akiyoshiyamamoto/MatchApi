@@ -26,6 +26,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SwipeRepositoryInterface::class, PDOSwipeRepository::class);
         $this->app->bind(LocationRepositoryInterface::class, PDOLocationRepository::class);
         $this->app->bind(NotificationRepositoryInterface::class, PDONotificationRepository::class);
+        $this->app->bind(ChatRepositoryInterface::class, PDOChatRepository::class);
     }
 
     public function boot()

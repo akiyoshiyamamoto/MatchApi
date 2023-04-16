@@ -2,6 +2,7 @@
 
 namespace App\Domain\Chat\Services;
 
+use App\Domain\Chat\Entities\Chat;
 use App\Domain\Chat\Repositories\ChatRepositoryInterface;
 
 class ChatService
@@ -26,5 +27,15 @@ class ChatService
     public function getAllChatsForUser($userId)
     {
         return $this->chatRepository->getAllChatsForUser($userId);
+    }
+
+    public function getConversation(int $userId, int $partnerId): array
+    {
+        return $this->chatRepository->getConversation($userId, $partnerId);
+    }
+
+    public function addChat(Chat $chat): Chat
+    {
+        return $this->chatRepository->save($chat);
     }
 }

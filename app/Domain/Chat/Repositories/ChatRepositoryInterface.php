@@ -21,13 +21,5 @@ interface ChatRepositoryInterface
      * @return Chat
      */
     public function save(Chat $chat): Chat;
-
-    /**
-     * Get all chats between two users.
-     *
-     * @param int $user1Id
-     * @param int $user2Id
-     * @return array
-     */
-    public function getChatsBetweenUsers(int $user1Id, int $user2Id): array;
+    public function getConversation(int $userId, int $partnerId): array;
 }
