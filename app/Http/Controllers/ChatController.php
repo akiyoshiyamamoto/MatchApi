@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\Chat\Services\ChatService;
 use App\Domain\Chat\Services\MessageService;
 use App\Http\Requests\GetConversationRequest;
+use App\Http\Requests\StoreChatRequest;
 use App\Http\Resources\ChatResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -31,14 +32,9 @@ class ChatController extends Controller
         return new ChatResource($chat);
     }
 
-    public function store(Request $request)
+    public function store(StoreChatRequest $request)
     {
-        $validated = $request->validate([
-            'user1_id' => 'required',
-            'user2_id' => 'required',
-        ]);
-
-        $chat = $this->chatService->create($validated);
+        $chat = $this->chatService->store($request->validated());
 
         return response()->json([
             'chat' => $chat,

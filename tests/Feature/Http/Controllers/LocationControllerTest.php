@@ -5,13 +5,10 @@ namespace Tests\Feature\Http\Controllers;
 use App\Domain\Location\Repositories\LocationRepositoryInterface;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class LocationControllerTest extends TestCase
 {
-    use WithFaker;
-
     private LocationRepositoryInterface $locationRepository;
 
     protected function setUp(): void

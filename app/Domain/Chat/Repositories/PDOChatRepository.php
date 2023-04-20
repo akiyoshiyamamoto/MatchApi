@@ -56,7 +56,7 @@ class PDOChatRepository implements ChatRepositoryInterface
     public function getConversation(int $userId, int $partnerId): array
     {
         $statement = $this->connection->prepare(
-            'SELECT * FROM chats WHERE (sender_id = :userId AND receiver_id = :partnerId) OR (sender_id = :partnerId AND receiver_id = :userId) ORDER BY created_at ASC'
+            'SELECT * FROM chats WHERE (sender_id = :userId AND receiver_id = :partnerId) OR (sender_id = :partnerId AND receiver_id = :userId) ORDER BY id ASC'
         );
 
         $statement->execute([
@@ -79,5 +79,25 @@ class PDOChatRepository implements ChatRepositoryInterface
         }
 
         return $chats;
+    }
+
+    public function store(array $data): Chat
+    {
+        $sql = 'INSERT INTO chats (sender_id, receiver_id, message, created_at, updated_at) VALUES (?, ?, ?, ?, ?)';
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->execute([
+            $data['sender_id'],
+            $data['receiver_id'],
+            $data['message'],
+            now()->format('Y-m-d H:i:s'),
+            now()->format('Y-m-d H:i:s'),
+        ]);
+
+        if (!$result) {
+            throw new \Exception('Failed to store chat message.');
+        }
+
+        $id = $this->connection->lastInsertId();
+        return $this->getById($id);
     }
 }

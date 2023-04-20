@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\ProfileImage\Services\ProfileImageService;
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use App\Http\Requests\UploadProfileImageRequest;
-use Database\migrations\ProfileImageService;
 
 class ProfileImageController extends Controller
 {
@@ -30,16 +30,15 @@ class ProfileImageController extends Controller
         $user = $this->userRepository->getUserById(auth()->user()->id);
         $path = $this->profileImageService->upload($request->file('image'));
         $this->userRepository->addProfileImage($user->getId(), $path);
-
         return response()->json(['message' => '画像がアップロードされました。', 'path' => $path]);
     }
 
-    public function delete($imageId)
+    public function delete(int $profileImageId)
     {
         $user = $this->userRepository->getUserById(auth()->user()->id);
-        $imagePath = $this->userRepository->getProfileImagePathById($imageId);
+        $imagePath = $this->userRepository->getProfileImagePathById($profileImageId);
         $this->profileImageService->delete($imagePath);
-        $this->userRepository->removeProfileImage($imageId);
+        $this->userRepository->removeProfileImage($profileImageId);
 
         return response()->json(['message' => '画像が削除されました。']);
     }

@@ -19,9 +19,9 @@ class ChatService
         return $this->chatRepository->getById($id);
     }
 
-    public function create($participants)
+    public function store($data)
     {
-        return $this->chatRepository->create($participants);
+        return $this->chatRepository->store($data);
     }
 
     public function getAllChatsForUser($userId)

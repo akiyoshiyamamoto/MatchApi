@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Database\migrations;
+namespace App\Domain\ProfileImage\Services;
 
 use App\Clients\ImageStorageClient;
 use Illuminate\Http\UploadedFile;

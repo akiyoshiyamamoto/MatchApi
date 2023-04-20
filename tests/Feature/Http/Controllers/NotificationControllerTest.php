@@ -2,23 +2,15 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Domain\Notification\Entities\Notification;
-use App\Domain\User\Entities\User;
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\NotificationFactory;
 use Database\Factories\UserFactory;
-use DateTime;
 use Faker\Factory as FakerFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class NotificationControllerTest extends TestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-
     private UserRepositoryInterface $userRepository;
 
     protected function setUp(): void

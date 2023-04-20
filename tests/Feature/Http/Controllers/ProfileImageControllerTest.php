@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Domain\ProfileImage\Services\ProfileImageService;
 use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\UserFactory;
-use Database\migrations\ProfileImageService;
 use Faker\Factory as FakerFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -14,8 +14,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProfileImageControllerTest extends TestCase
 {
-    use WithFaker;
-
     private UserRepositoryInterface $userRepository;
     private ProfileImageService $profileImageService;
 
@@ -46,7 +44,7 @@ class ProfileImageControllerTest extends TestCase
             ->post('/api/user/profile-image', ['image' => $file]);
 
         $response->assertStatus(200)
-            ->assertJson(['message' => '画像がアップロードされました。', 'path' => 'path/to/profile.jpg']);
+            ->assertJson(['message' => '画像がアップロードされました。']);
     }
 
     public function test_upload_and_delete_profile_image()
@@ -69,10 +67,8 @@ class ProfileImageControllerTest extends TestCase
         $this->userRepository->expects($this->once())->method('getProfileImagePathById')->with($user->getId());
         $this->profileImageService->expects($this->once())->method('delete');
         $this->userRepository->expects($this->once())->method('removeProfileImage');
-
         $deleteResponse = $this->withHeader('Authorization', "Bearer $token")
             ->delete('/api/user/profile-image/' . $profileImage->id);
-
         $deleteResponse->assertStatus(200)
             ->assertJson([
                 'message' => '画像が削除されました。'

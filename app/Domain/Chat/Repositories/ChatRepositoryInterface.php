@@ -22,4 +22,5 @@ interface ChatRepositoryInterface
      */
     public function save(Chat $chat): Chat;
     public function getConversation(int $userId, int $partnerId): array;
+    public function store(array $data): Chat;
 }

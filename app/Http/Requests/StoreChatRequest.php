@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UploadProfileImageRequest extends FormRequest
+class StoreChatRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,11 +17,14 @@ class UploadProfileImageRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'image' => 'required|image|max:2048',
+            'sender_id' => 'required|integer',
+            'receiver_id' => 'required|integer',
+            'message' => 'required|string|max:1000',
         ];
     }
 }
