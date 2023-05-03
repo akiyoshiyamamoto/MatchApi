@@ -100,4 +100,13 @@ class PDOChatRepository implements ChatRepositoryInterface
         $id = $this->connection->lastInsertId();
         return $this->getById($id);
     }
+
+    public function updateReadStatus(int $id, bool $isRead): bool
+    {
+        $updatedRows = DB::table('chats')
+            ->where('id', $id)
+            ->update(['is_read' => $isRead]);
+
+        return $updatedRows > 0;
+    }
 }

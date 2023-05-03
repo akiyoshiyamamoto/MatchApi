@@ -38,4 +38,9 @@ class ChatService
     {
         return $this->chatRepository->save($chat);
     }
+
+    public function updateReadStatus(int $id, bool $isRead): bool
+    {
+        return $this->chatRepository->updateReadStatus($id, $isRead);
+    }
 }

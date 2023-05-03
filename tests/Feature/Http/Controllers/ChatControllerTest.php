@@ -108,4 +108,24 @@ class ChatControllerTest extends TestCase
         $this->assertSame((int)$chatData['receiver_id'], (int)$result['receiver_id']);
         $this->assertSame($chatData['message'], $result['message']);
     }
+
+    public function test_update_read_status()
+    {
+        $user1 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))->createAndPersist(['password' => '1234']);
+        $user2 = (new UserFactory(FakerFactory::create(), $this->pdoInstance))->createAndPersist(['password' => '1234']);
+
+        $senderId = $user1->getId();
+        $receiverId = $user2->getId();
+        $chat = $this->chatFactory->create($senderId, $receiverId);
+
+        $this->chatRepository->expects($this->once())
+            ->method('updateReadStatus')
+            ->with($chat->getId(), true)
+            ->willReturn(true);
+
+        $response = $this->putJson("/api/chats/{$chat->getId()}/read-status", ['is_read' => true]);
+
+        $response->assertStatus(200)
+            ->assertJson(['message' => '既読ステータスが更新されました。']);
+    }
 }
