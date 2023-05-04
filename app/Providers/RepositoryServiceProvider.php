@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domain\Chat\Repositories\ChatRepositoryInterface;
+use App\Domain\Chat\Repositories\MessageRepositoryInterface;
 use App\Domain\Chat\Repositories\PDOChatRepository;
 use App\Domain\Location\Repositories\LocationRepositoryInterface;
 use App\Domain\Location\Repositories\PDOLocationRepository;
@@ -11,10 +13,8 @@ use App\Domain\Swipe\Repositories\PDOSwipeRepository;
 use App\Domain\Swipe\Repositories\SwipeRepositoryInterface;
 use App\Domain\User\Repositories\PDOUserRepository;
 use App\Domain\User\Repositories\UserRepositoryInterface;
-use App\Infrastructure\Repositories\PDOMessageRepository;
+use App\Infrastructure\PDOMessageRepository;
 use Illuminate\Support\ServiceProvider;
-use App\Domain\Chat\Repositories\ChatRepositoryInterface;
-use App\Domain\Chat\Repositories\MessageRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {

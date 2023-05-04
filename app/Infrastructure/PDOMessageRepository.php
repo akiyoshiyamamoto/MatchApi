@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Infrastructure\Repositories;
+namespace App\Infrastructure;
 
+use App\Database\Connection;
 use App\Domain\Chat\Entities\Message;
 use App\Domain\Chat\Repositories\MessageRepositoryInterface;
-use App\Database\Connection;
 use PDO;
 
 class PDOMessageRepository implements MessageRepositoryInterface
