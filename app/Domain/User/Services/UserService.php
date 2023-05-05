@@ -56,4 +56,24 @@ class UserService
     {
         return $this->notificationRepository->findNewMatchNotifications($userId);
     }
+
+    public function getProfileImages(int $userId): array
+    {
+        return $this->userRepository->getProfileImages($userId);
+    }
+
+    public function addProfileImage(int $userId, string $path): \App\Domain\User\Entities\ProfileImage
+    {
+        return $this->userRepository->addProfileImage($userId, $path);
+    }
+
+    public function getProfileImagePathById(int $profileImageId): string
+    {
+        return $this->userRepository->getProfileImagePathById($profileImageId);
+    }
+
+    public function removeProfileImage(int $profileImageId): void
+    {
+        $this->userRepository->removeProfileImage($profileImageId);
+    }
 }

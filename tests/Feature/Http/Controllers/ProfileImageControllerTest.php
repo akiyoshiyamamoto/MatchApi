@@ -3,10 +3,9 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Domain\ProfileImage\Services\ProfileImageService;
-use App\Domain\User\Repositories\UserRepositoryInterface;
+use App\Domain\User\Services\UserService;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -14,14 +13,14 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ProfileImageControllerTest extends TestCase
 {
-    private UserRepositoryInterface $userRepository;
+    private UserService $userService;
     private ProfileImageService $profileImageService;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
-        $this->profileImageService = $this->createMock(ProfileImageService::class);
+        $this->userService = $this->app->make(UserService::class);
+        $this->profileImageService = $this->app->make(ProfileImageService::class);
     }
 
     protected function tearDown(): void
@@ -34,11 +33,6 @@ class ProfileImageControllerTest extends TestCase
         $user = (new UserFactory(FakerFactory::create(), $this->pdoInstance))->createAndPersist(['password' => '1234']);
         $token = JWTAuth::fromUser($user);
         $file = UploadedFile::fake()->image('profile.jpg');
-
-        $this->userRepository->expects($this->once())->method('getUserById')->with($user->getId())->willReturn($user);
-        $this->profileImageService->expects($this->once())->method('upload')->with($file)->willReturn('path/to/profile.jpg');
-        $this->userRepository->expects($this->once())->method('addProfileImage')->with($user->getId(), 'path/to/profile.jpg');
-
 
         $response = $this->withHeader('Authorization', "Bearer $token")
             ->post('/api/user/profile-image', ['image' => $file]);
@@ -62,14 +56,9 @@ class ProfileImageControllerTest extends TestCase
         // Get the uploaded profile image
         $profileImage = DB::table('profile_images')->first();
 
-        // Delete the image
-        $this->userRepository->expects($this->once())->method('getUserById')->with($user->getId())->willReturn($user);
-        $this->userRepository->expects($this->once())->method('getProfileImagePathById')->with($user->getId());
-        $this->profileImageService->expects($this->once())->method('delete');
-        $this->userRepository->expects($this->once())->method('removeProfileImage');
-        $deleteResponse = $this->withHeader('Authorization', "Bearer $token")
+        $response = $this->withHeader('Authorization', "Bearer $token")
             ->delete('/api/user/profile-image/' . $profileImage->id);
-        $deleteResponse->assertStatus(200)
+        $response->assertStatus(200)
             ->assertJson([
                 'message' => '画像が削除されました。'
             ]);

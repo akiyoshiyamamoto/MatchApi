@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountSettingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LocationController;
@@ -36,7 +37,7 @@ Route::middleware('jwt.check')->group(function () {
         Route::name('profile_image.')->group(function () {
             Route::get('/profile-images', [ProfileImageController::class, 'index'])->name('index');
             Route::post('/profile-image', [ProfileImageController::class, 'upload'])->name('upload');
-            Route::delete('/profile-image/{profile_image_id}', [ProfileImageController::class, 'delete'])->name('delete');
+            Route::delete('/profile-image/{id}', [ProfileImageController::class, 'delete'])->name('delete');
         });
         Route::post('/location', [UserController::class, 'updateLocation'])->name('location.update');
         Route::get('/nearby-users', [UserController::class, 'nearbyUsers'])->name('nearby_users');
@@ -60,5 +61,10 @@ Route::middleware('jwt.check')->group(function () {
         Route::get('/', [ChatController::class, 'getConversation'])->name('index');
         Route::post('/', [ChatController::class, 'store'])->name('store');
         Route::get('/{id}', [ChatController::class, 'show'])->name('show');
+        Route::put('/{id}/read-status', [ChatController::class, 'updateReadStatus'])->name('updateReadStatus');
+    });
+
+    Route::name('account_settings.')->prefix('account_settings')->group(function () {
+        Route::get('/{user_id}', [AccountSettingController::class, 'getAccountSetting'])->name('getAccountSetting');
     });
 });

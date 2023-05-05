@@ -3,6 +3,7 @@
 namespace App\Domain\Chat\Repositories;
 
 use App\Domain\Chat\Entities\Chat;
+use Illuminate\Support\Facades\DB;
 use PDO;
 
 class PDOChatRepository implements ChatRepositoryInterface

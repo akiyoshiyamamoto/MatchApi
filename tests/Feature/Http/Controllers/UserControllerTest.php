@@ -6,8 +6,6 @@ use App\Domain\User\Repositories\UserRepositoryInterface;
 use Database\Factories\UserFactory;
 use DateTime;
 use Faker\Factory as FakerFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 

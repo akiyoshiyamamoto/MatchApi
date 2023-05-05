@@ -16,16 +16,17 @@ class AccountSettingController extends Controller
         $this->accountSettingService = $accountSettingService;
     }
 
-    public function getAccountSetting(GetAccountSettingRequest $request): JsonResponse
+    public function getAccountSetting(int $userId): JsonResponse
     {
-        $userId = $request->input('user_id');
-
         $accountSetting = $this->accountSettingService->getAccountSettingByUserId($userId);
 
         if (!$accountSetting) {
             return response()->json(['message' => 'アカウント設定が見つかりませんでした。'], 404);
         }
 
-        return new AccountSettingResource($accountSetting);
+        return (new AccountSettingResource($accountSetting))
+            ->response()
+            ->setStatusCode(200)
+            ->header('Content-Type', 'application/json');
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domain\AccountSetting\Repositories\PDOAccountSettingRepository;
+use App\Domain\AccountSetting\Repositories\AccountSettingRepositoryInterface;
 use App\Domain\Chat\Repositories\ChatRepositoryInterface;
 use App\Domain\Chat\Repositories\MessageRepositoryInterface;
 use App\Domain\Chat\Repositories\PDOChatRepository;
@@ -27,6 +29,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(LocationRepositoryInterface::class, PDOLocationRepository::class);
         $this->app->bind(NotificationRepositoryInterface::class, PDONotificationRepository::class);
         $this->app->bind(ChatRepositoryInterface::class, PDOChatRepository::class);
+        $this->app->bind(AccountSettingRepositoryInterface::class, PDOAccountSettingRepository::class);
     }
 
     public function boot()

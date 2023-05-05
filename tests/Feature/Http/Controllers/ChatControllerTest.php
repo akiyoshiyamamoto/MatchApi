@@ -117,13 +117,10 @@ class ChatControllerTest extends TestCase
         $senderId = $user1->getId();
         $receiverId = $user2->getId();
         $chat = $this->chatFactory->create($senderId, $receiverId);
+        $token = JWTAuth::fromUser($user1);
 
-        $this->chatRepository->expects($this->once())
-            ->method('updateReadStatus')
-            ->with($chat->getId(), true)
-            ->willReturn(true);
-
-        $response = $this->putJson("/api/chats/{$chat->getId()}/read-status", ['is_read' => true]);
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->put("/api/chats/{$chat->getId()}/read-status", ['isRead' => true]);
 
         $response->assertStatus(200)
             ->assertJson(['message' => '既読ステータスが更新されました。']);

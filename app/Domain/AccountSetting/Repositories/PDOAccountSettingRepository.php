@@ -5,7 +5,7 @@ namespace App\Domain\AccountSetting\Repositories;
 use App\Domain\AccountSetting\Entities\AccountSetting;
 use Illuminate\Support\Facades\DB;
 
-class AccountSettingRepository implements AccountSettingRepositoryInterface
+class PDOAccountSettingRepository implements AccountSettingRepositoryInterface
 {
     public function getAccountSettingByUserId(int $userId): ?AccountSetting
     {
