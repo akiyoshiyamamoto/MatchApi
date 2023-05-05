@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Domain\ProfileImage\Services\ProfileImageService;
 use App\Domain\User\Services\UserService;
+use Database\Factories\ProfileImageFactory;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
 use Illuminate\Http\UploadedFile;
@@ -21,6 +22,7 @@ class ProfileImageControllerTest extends TestCase
         parent::setUp();
         $this->userService = $this->app->make(UserService::class);
         $this->profileImageService = $this->app->make(ProfileImageService::class);
+        $this->profileImageFactory = $this->app->make(ProfileImageFactory::class);
     }
 
     protected function tearDown(): void
@@ -41,7 +43,7 @@ class ProfileImageControllerTest extends TestCase
             ->assertJson(['message' => '画像がアップロードされました。']);
     }
 
-    public function test_upload_and_delete_profile_image()
+    public function test_upload_profile_image()
     {
         $user = (new UserFactory(FakerFactory::create(), $this->pdoInstance))->createAndPersist(['password' => '1234']);
         $token = JWTAuth::fromUser($user);
@@ -52,12 +54,20 @@ class ProfileImageControllerTest extends TestCase
             ->post('/api/user/profile-image', ['image' => $file]);
 
         $uploadResponse->assertStatus(200);
+    }
+
+    public function test_delete_profile_image()
+    {
+        $user = (new UserFactory(FakerFactory::create(), $this->pdoInstance))->createAndPersist(['password' => '1234']);
+        $token = JWTAuth::fromUser($user);
 
         // Get the uploaded profile image
-        $profileImage = DB::table('profile_images')->first();
+        $file = UploadedFile::fake()->image('profile.jpg');
+        $profileImage = $this->profileImageFactory->create($user->getId());
 
         $response = $this->withHeader('Authorization', "Bearer $token")
-            ->delete('/api/user/profile-image/' . $profileImage->id);
+            ->delete('/api/user/profile-image/' . $profileImage->getId());
+
         $response->assertStatus(200)
             ->assertJson([
                 'message' => '画像が削除されました。'

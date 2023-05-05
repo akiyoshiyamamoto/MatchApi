@@ -78,10 +78,10 @@ class PDOUserRepository implements UserRepositoryInterface
         $stmt->execute(['userId' => $userId, 'path' => $path]);
     }
 
-    public function removeProfileImage($userId): bool
+    public function removeProfileImage($id): bool
     {
         $stmt = $this->connection->prepare("DELETE FROM profile_images WHERE id = :imageId");
-        return $stmt->execute(['userId' => $userId]);
+        return $stmt->execute(['imageId' => $id]);
     }
 
     private function createUserFromData(array $userData): User
